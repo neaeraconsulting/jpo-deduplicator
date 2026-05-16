@@ -10,8 +10,8 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        MAVEN_GITHUB_TOKEN: ${MAVEN_GITHUB_TOKEN}
-        MAVEN_GITHUB_ORG: ${MAVEN_GITHUB_ORG}
+        MAVEN_GITHUB_TOKEN: ${MAVEN_GITHUB_TOKEN:?error}
+        MAVEN_GITHUB_ORG: ${MAVEN_GITHUB_ORG:?error}
     image: jpo-deduplicator:latest
     privileged: false # Set true to allow writing to /proc/sys/vm/drop_caches
     restart: ${RESTART_POLICY}

@@ -8,9 +8,6 @@ ARG MAVEN_GITHUB_ORG
 ENV MAVEN_GITHUB_TOKEN=$MAVEN_GITHUB_TOKEN
 ENV MAVEN_GITHUB_ORG=$MAVEN_GITHUB_ORG
 
-RUN test -n "$MAVEN_GITHUB_TOKEN" || (echo "Error: MAVEN_GITHUB_TOKEN cannot be empty" && exit 1)
-RUN test -n "$MAVEN_GITHUB_ORG" || (echo "Error: MAVEN_GITHUB_ORG cannot be empty" && exit 1)
-
 # Copy and Build Deduplicator
 WORKDIR /home
 COPY ./jpo-deduplicator/pom.xml ./jpo-deduplicator/
