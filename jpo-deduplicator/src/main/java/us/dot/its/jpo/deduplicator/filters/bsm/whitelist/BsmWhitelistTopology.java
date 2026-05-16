@@ -1,6 +1,7 @@
 package us.dot.its.jpo.deduplicator.filters.bsm.whitelist;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
@@ -20,8 +21,9 @@ import us.dot.its.jpo.geojsonconverter.DateJsonMapper;
 @Slf4j
 public class BsmWhitelistTopology {
 
-    private static final String TOPOLOGY_NAME = "BsmWhitelist";
+    public static final String TOPOLOGY_NAME = "BsmWhitelist";
 
+    @Getter
     KafkaStreams streams;
     DeduplicatorProperties deduplicatorProps;
     BsmWhitelistProperties props;

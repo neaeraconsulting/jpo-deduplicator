@@ -1,5 +1,6 @@
 package us.dot.its.jpo.deduplicator.deduplicator.topologies;
 
+import lombok.Getter;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -31,6 +32,7 @@ public class TimDeduplicatorTopology {
     private static final Logger logger = LoggerFactory.getLogger(TimDeduplicatorTopology.class);
 
     Topology topology;
+    @Getter
     KafkaStreams streams;
     ObjectMapper objectMapper;
     DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;

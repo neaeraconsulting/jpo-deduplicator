@@ -1,5 +1,6 @@
 package us.dot.its.jpo.deduplicator.deduplicator.topologies;
 
+import lombok.Getter;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -27,6 +28,7 @@ public class ProcessedSpatDeduplicatorTopology {
     private static final Logger logger = LoggerFactory.getLogger(ProcessedSpatDeduplicatorTopology.class);
 
     Topology topology;
+    @Getter
     KafkaStreams streams;
     String inputTopic;
     String outputTopic;
