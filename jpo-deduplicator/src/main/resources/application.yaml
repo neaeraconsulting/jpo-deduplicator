@@ -38,7 +38,10 @@ kafkaTopicDeduplicatedOdeTimJson: topic.DeduplicatedOdeTimJson
 enableOdeTimDeduplication: ${ENABLE_ODE_TIM_DEDUPLICATION:true}
 
 # Ode Bsm Json Configuration
+# Comment out when BSM whitelist filter is enabled
 kafkaTopicOdeBsmJson: topic.OdeBsmJson
+# Uncomment when BSM whitelist filter is enabled
+#kafkaTopicOdeBsmJson: topic.WhitelistedOdeBsmJson
 kafkaTopicDeduplicatedOdeBsmJson: topic.DeduplicatedOdeBsmJson
 enableOdeBsmDeduplication: ${ENABLE_ODE_BSM_DEDUPLICATION:true}
 odeBsmMaximumTimeDelta: 10000 # Milliseconds
@@ -103,3 +106,23 @@ kafka.topics:
     - name: ${kafkaTopicDeduplicatedProcessedBsm}
       cleanupPolicy: delete
       retentionMs: 300000
+
+filters:
+  bsm:
+    whitelist:
+      enabled: ${ENABLE_BSM_WHITELIST:false}
+      input-topic: topic.OdeBsmJson
+      output-topic: topic.WhitelistedOdeBsmJson
+      groups:
+        ioo-bus:
+          description: IOO buses
+          id-lsb:
+            - 2001
+            - 2002
+        probe:
+          description: IOO probe vehicles
+          id-lsb:
+            - 4001
+            - 4002
+
+
