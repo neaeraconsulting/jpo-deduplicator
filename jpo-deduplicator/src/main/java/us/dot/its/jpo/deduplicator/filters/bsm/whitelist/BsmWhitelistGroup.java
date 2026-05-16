@@ -8,13 +8,7 @@ import java.util.Set;
 public class BsmWhitelistGroup {
 
     /**
-     * Short name of the group.
-     * For example: "bus", "plow", "probe"
-     */
-    private String name;
-
-    /**
-     * Full description of the group.
+     * Description of the group.
      * For example: "City buses", "DOT Snow Plows", "IOO probe vehicles"
      */
     private String description;

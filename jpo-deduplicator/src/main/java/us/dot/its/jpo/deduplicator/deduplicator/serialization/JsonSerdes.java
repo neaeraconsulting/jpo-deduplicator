@@ -45,4 +45,10 @@ public class JsonSerdes {
     public static Serde<OdeMessageFrameData> OdeMessageFrame() {
         return OdeMessageFrame(null);
     }
+
+    public static Serde<OdeMessageFrameData> OdeMessageFrameData() {
+        return Serdes.serdeFrom(
+                new JsonSerializer<>(),
+                new JsonDeserializer<>(OdeMessageFrameData.class));
+    }
 }
