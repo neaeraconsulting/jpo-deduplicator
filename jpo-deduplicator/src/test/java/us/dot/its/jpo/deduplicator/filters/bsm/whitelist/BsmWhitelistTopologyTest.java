@@ -2,6 +2,7 @@ package us.dot.its.jpo.deduplicator.filters.bsm.whitelist;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.collect.Sets;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.VoidDeserializer;
 import org.apache.kafka.common.serialization.VoidSerializer;
 import org.apache.kafka.streams.TestInputTopic;
@@ -9,7 +10,6 @@ import org.apache.kafka.streams.TestOutputTopic;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.TopologyTestDriver;
 import org.junit.Test;
-import us.dot.its.jpo.asn.j2735.r2024.Common.TemporaryID;
 import us.dot.its.jpo.deduplicator.DeduplicatorProperties;
 import us.dot.its.jpo.geojsonconverter.serialization.deserializers.JsonDeserializer;
 import us.dot.its.jpo.geojsonconverter.serialization.serializers.JsonSerializer;
@@ -24,8 +24,6 @@ import static org.hamcrest.Matchers.hasSize;
 import static us.dot.its.jpo.deduplicator.filters.bsm.whitelist.BsmWhitelistTestUtils.*;
 
 public class BsmWhitelistTopologyTest {
-
-
 
     @Test
     public void testTopology() throws JsonProcessingException {
@@ -54,13 +52,16 @@ public class BsmWhitelistTopologyTest {
 
             List<OdeMessageFrameData> dataList = outputTopic.readValuesToList();
 
-            // Result should include only id in "include" list
+            // Result should include only ids in "include" list
             assertThat(dataList, hasSize(includeIds.size()));
             Set<String> resultIds = dataList.stream()
-                    .map(data -> getId(data).toString())
+                    .map(data -> getId(data).toString().toLowerCase())
                     .collect(Collectors.toSet());
             Set<String> diff = Sets.symmetricDifference(resultIds, includeIds);
-            assertThat(diff, hasSize(0));
+            assertThat(
+                    String.format("includeIds: %s, excludeIds: %s, resultIds: %s, diff: %s",
+                            includeIds, excludeIds, resultIds, diff),
+                    diff, hasSize(0));
         }
     }
 
