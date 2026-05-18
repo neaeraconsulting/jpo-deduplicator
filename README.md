@@ -60,6 +60,14 @@ If enabled, groups of BSM IDs can be configured with fixed bytes.
 BSMs with the two least significant bytes of the ID matching the
 configured lists are included.  All other BSMs are filtered out.
 
+## Health Check Endpoints
+
+Endpoints to check the health of the Kafka Streams Topologies are available:
+
+*`GET BASE_URL:8085/health/check`*
+: Overall health check, returns json such as
+
+
 ## Release Notes
 
 The current version and release history of the JPO Deduplicator: [Release Notes](<docs/Release_notes.md>)

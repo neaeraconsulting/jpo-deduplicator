@@ -87,7 +87,9 @@ public class BsmWhitelistTopology {
                     }
 
                     TemporaryID id = coreData.getId();
-                    return props.whitelisted(id);
+                    boolean isWhitelisted = props.whitelisted(id);
+                    log.info("id {} is whitelisted", id);
+                    return isWhitelisted;
 
                 })
                 .to(props.getOutputTopic(), Produced.with(

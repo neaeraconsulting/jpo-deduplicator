@@ -33,7 +33,7 @@
         <sonar.coverage.jacoco.xmReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmReportPaths>
         <sonar.language>java</sonar.language>
         <jpo.ode.version>5.1.0</jpo.ode.version>
-        <jpo.geojsonconverter.version>3.2.0</jpo.geojsonconverter.version>
+        <jpo.geojsonconverter.version>3.3.0-alpha7</jpo.geojsonconverter.version>
     </properties>
     <dependencies>
         <!-- Spring Boot Dependencies -->
