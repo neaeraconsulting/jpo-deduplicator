@@ -36,6 +36,11 @@ public abstract class DeduplicationProcessor<T> implements Processor<String, T, 
             return;
         }
 
+        // Don't do anything if value is null (possible after deserialization failure)
+        if(record.value() == null) {
+            return;
+        }
+
         T lastRecord = store.get(record.key());
         if (lastRecord == null) {
             store.put(record.key(), record.value());
@@ -60,6 +65,14 @@ public abstract class DeduplicationProcessor<T> implements Processor<String, T, 
             while (iterator.hasNext()) {
 
                 KeyValue<String, T> record = iterator.next();
+
+                // Cleans up any record with a null value. This should fix existing deployments where null values were allowed to be stored prior to the addition of the null check in the process method.
+                if(record.value == null) {
+                    store.delete(record.key);
+                    continue;
+                }
+
+
                 // Delete any record more than 2 hours old.
                 if (Instant.ofEpochMilli(timestamp).minusSeconds(2 * 60 * 60).isAfter(getMessageTime(record.value))) {
                     store.delete(record.key);
