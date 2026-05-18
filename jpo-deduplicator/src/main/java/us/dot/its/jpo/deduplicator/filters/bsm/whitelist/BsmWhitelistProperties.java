@@ -18,6 +18,7 @@ public class BsmWhitelistProperties {
     private boolean enabled;
     private String inputTopic;
     private String outputTopic;
+    private String outputDlqTopic;
     private Map<String, BsmWhitelistGroup> groups;
 
 

@@ -113,6 +113,7 @@ filters:
       enabled: ${ENABLE_BSM_WHITELIST:false}
       input-topic: topic.OdeBsmJson
       output-topic: topic.WhitelistedOdeBsmJson
+      output-dlq-topic: topic.BlacklistedOdeBsmJson
       groups:
         ioo-bus:
           description: IOO buses

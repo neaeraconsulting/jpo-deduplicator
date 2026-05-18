@@ -8,6 +8,8 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
+import org.apache.kafka.streams.kstream.Branched;
+import org.apache.kafka.streams.kstream.BranchedKStream;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.Produced;
 import us.dot.its.jpo.asn.j2735.r2024.BasicSafetyMessage.BasicSafetyMessage;
@@ -17,6 +19,7 @@ import us.dot.its.jpo.asn.j2735.r2024.Common.TemporaryID;
 import us.dot.its.jpo.deduplicator.DeduplicatorProperties;
 import us.dot.its.jpo.deduplicator.deduplicator.serialization.JsonSerdes;
 import us.dot.its.jpo.geojsonconverter.DateJsonMapper;
+import us.dot.its.jpo.ode.model.OdeMessageFrameData;
 
 @Slf4j
 public class BsmWhitelistTopology {
@@ -54,51 +57,61 @@ public class BsmWhitelistTopology {
     public Topology buildTopology() {
         StreamsBuilder builder = new StreamsBuilder();
 
-        builder.stream(props.getInputTopic(),
+        var map =
+          builder.stream(props.getInputTopic(),
                         Consumed.with(
                                 Serdes.Void(),
                                 JsonSerdes.OdeMessageFrameData()))
+            .split()
+            .branch((key, frameData) -> whitelisted(frameData),
+                Branched.withConsumer(whitelistedStream ->
+                    whitelistedStream.to(props.getOutputTopic(),
+                        Produced.with(Serdes.Void(), JsonSerdes.OdeMessageFrameData()))))
+            .defaultBranch(Branched.withConsumer(blacklistedStream ->
+                blacklistedStream.to(props.getOutputDlqTopic(), Produced.with(Serdes.Void(), JsonSerdes.OdeMessageFrameData()))));
 
-                .filter((key, frameData) -> {
 
-                    if (frameData == null || frameData.getPayload() == null || frameData.getPayload().getData() == null) {
-                        log.warn("Frame data or contents is null or empty.");
-                        return false;
-                    }
-
-                    var mf = frameData.getPayload().getData();
-
-                    if (!(mf instanceof BasicSafetyMessageMessageFrame bsmMf)) {
-                        log.warn("Frame data {} is not of type BasicSafetyMessageMessageFrame.", mf);
-                        return false;
-                    }
-
-                    BasicSafetyMessage bsm = bsmMf.getValue();
-
-                    if (bsm == null) {
-                        log.warn("BasicSafetyMessage is null in message frame {}.", bsmMf);
-                        return false;
-                    }
-
-                    BSMcoreData coreData = bsm.getCoreData();
-                    if (coreData == null) {
-                        log.warn("CoreData is null in bsm {}.", bsm);
-                        return false;
-                    }
-
-                    TemporaryID id = coreData.getId();
-                    boolean isWhitelisted = props.whitelisted(id);
-                    log.info("id {} is whitelisted", id);
-                    return isWhitelisted;
-
-                })
-                .to(props.getOutputTopic(), Produced.with(
-                   Serdes.Void(),
-                   JsonSerdes.OdeMessageFrameData()
-                ));
+//                .to(props.getOutputTopic(), Produced.with(
+//                   Serdes.Void(),
+//                   JsonSerdes.OdeMessageFrameData()
+//                ));
 
         return builder.build();
 
+
+    }
+
+    private boolean whitelisted(OdeMessageFrameData frameData) {
+
+        if (frameData == null || frameData.getPayload() == null || frameData.getPayload().getData() == null) {
+          log.warn("Frame data or contents is null or empty.");
+          return false;
+        }
+
+        var mf = frameData.getPayload().getData();
+
+        if (!(mf instanceof BasicSafetyMessageMessageFrame bsmMf)) {
+          log.warn("Frame data {} is not of type BasicSafetyMessageMessageFrame.", mf);
+          return false;
+        }
+
+        BasicSafetyMessage bsm = bsmMf.getValue();
+
+        if (bsm == null) {
+          log.warn("BasicSafetyMessage is null in message frame {}.", bsmMf);
+          return false;
+        }
+
+        BSMcoreData coreData = bsm.getCoreData();
+        if (coreData == null) {
+          log.warn("CoreData is null in bsm {}.", bsm);
+          return false;
+        }
+
+        TemporaryID id = coreData.getId();
+        boolean isWhitelisted = props.whitelisted(id);
+        log.info("id {} is whitelisted: {}", id, isWhitelisted);
+        return isWhitelisted;
     }
 
     public void stop() {

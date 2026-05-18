@@ -26,6 +26,7 @@ public class BsmWhitelistTestUtils {
         var props = new BsmWhitelistProperties();
         props.setEnabled(true);
         props.setInputTopic("topic.OdeBsmJson");
+        props.setOutputDlqTopic("topic.BlacklistedOdeBsmJson");
         props.setOutputTopic("topic.WhitelistedOdeBsmJson");
         var groups = new HashMap<String, BsmWhitelistGroup>();
         var busGroup = new BsmWhitelistGroup();
