@@ -9,7 +9,6 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
 import org.apache.kafka.streams.kstream.Branched;
-import org.apache.kafka.streams.kstream.BranchedKStream;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.Produced;
 import us.dot.its.jpo.asn.j2735.r2024.BasicSafetyMessage.BasicSafetyMessage;
@@ -20,6 +19,7 @@ import us.dot.its.jpo.deduplicator.DeduplicatorProperties;
 import us.dot.its.jpo.deduplicator.deduplicator.serialization.JsonSerdes;
 import us.dot.its.jpo.geojsonconverter.DateJsonMapper;
 import us.dot.its.jpo.ode.model.OdeMessageFrameData;
+import static us.dot.its.jpo.deduplicator.utils.OdeJsonUtils.getBsmTemporaryID;
 
 @Slf4j
 public class BsmWhitelistTopology {
@@ -57,7 +57,6 @@ public class BsmWhitelistTopology {
     public Topology buildTopology() {
         StreamsBuilder builder = new StreamsBuilder();
 
-        var map =
           builder.stream(props.getInputTopic(),
                         Consumed.with(
                                 Serdes.Void(),
@@ -67,14 +66,13 @@ public class BsmWhitelistTopology {
                 Branched.withConsumer(whitelistedStream ->
                     whitelistedStream.to(props.getOutputTopic(),
                         Produced.with(Serdes.Void(), JsonSerdes.OdeMessageFrameData()))))
+              // If not whitelisted, emit the Temp ID value to a dlq topic
             .defaultBranch(Branched.withConsumer(blacklistedStream ->
-                blacklistedStream.to(props.getOutputDlqTopic(), Produced.with(Serdes.Void(), JsonSerdes.OdeMessageFrameData()))));
-
-
-//                .to(props.getOutputTopic(), Produced.with(
-//                   Serdes.Void(),
-//                   JsonSerdes.OdeMessageFrameData()
-//                ));
+                blacklistedStream
+                    .mapValues(bsm -> getBsmTemporaryID(bsm).toString())
+                    .to(props.getOutputDlqTopic(),
+                    Produced.with(Serdes.Void(),
+                        Serdes.String()))));
 
         return builder.build();
 

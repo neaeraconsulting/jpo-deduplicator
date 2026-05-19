@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 
 import lombok.extern.slf4j.Slf4j;
+import us.dot.its.jpo.asn.j2735.r2024.BasicSafetyMessage.BasicSafetyMessageMessageFrame;
+import us.dot.its.jpo.asn.j2735.r2024.Common.TemporaryID;
 import us.dot.its.jpo.ode.model.OdeMessageFrameData;
 import us.dot.its.jpo.ode.model.OdeMessageFrameMetadata;
 
@@ -31,5 +33,26 @@ public class OdeJsonUtils {
                     : "null"), e);
             return Instant.ofEpochMilli(0);
         }
+    }
+
+    public static TemporaryID getBsmTemporaryID(OdeMessageFrameData frameData) {
+        if (frameData == null) {
+            throw new IllegalArgumentException("frameData is null");
+        }
+        if (frameData.getPayload() == null) {
+            throw new IllegalArgumentException("frameData.payload is null");
+        }
+        var mf = frameData.getPayload().getData();
+        if (!(mf instanceof BasicSafetyMessageMessageFrame bsmMf)) {
+            throw new IllegalArgumentException(String.format(
+                "Frame data %S is not of type BasicSafetyMessageMessageFrame.", mf));
+        }
+        if (bsmMf.getValue() == null) {
+            throw new IllegalArgumentException("frameData.payload.value is null");
+        }
+        if (bsmMf.getValue().getCoreData() == null) {
+            throw new IllegalArgumentException("frameData.payload.value.coreData is null");
+        }
+        return bsmMf.getValue().getCoreData().getId();
     }
 }

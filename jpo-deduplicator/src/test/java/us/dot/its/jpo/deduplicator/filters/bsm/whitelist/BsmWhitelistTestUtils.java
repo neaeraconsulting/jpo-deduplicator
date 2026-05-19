@@ -41,15 +41,6 @@ public class BsmWhitelistTestUtils {
         return props;
     }
 
-    public static TemporaryID getId(OdeMessageFrameData frameData) {
-        var mf = frameData.getPayload().getData();
-        if (!(mf instanceof BasicSafetyMessageMessageFrame bsmMf)) {
-            throw new IllegalArgumentException(String.format(
-                    "Frame data %S is not of type BasicSafetyMessageMessageFrame.", mf));
-        }
-        return bsmMf.getValue().getCoreData().getId();
-    }
-
     public static void setId(OdeMessageFrameData frameData, String hexId) {
         var mf = frameData.getPayload().getData();
         if (!(mf instanceof BasicSafetyMessageMessageFrame bsmMf)) {
