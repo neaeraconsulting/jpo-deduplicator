@@ -31,7 +31,7 @@ public class BsmWhitelistProperties {
             log.warn ("Malformed TemporaryID {} doesn't have 4 octets", id);
             return false;
         }
-        int lsb = (idBytes[2] << 8) | idBytes[3];
+        int lsb = (Byte.toUnsignedInt(idBytes[2]) << 8) | Byte.toUnsignedInt(idBytes[3]);
         if (groups == null) return false;
         for (BsmWhitelistGroup group : groups.values()) {
             if (group.getIdLsb() != null && group.getIdLsb().contains(lsb)) {
