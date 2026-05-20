@@ -64,9 +64,95 @@ configured lists are included.  All other BSMs are filtered out.
 
 Endpoints to check the health of the Kafka Streams Topologies are available:
 
-*`GET BASE_URL:8085/health/check`*
-: Overall health check, returns json such as
+### **`GET {BASE_URL}:8085/health/check`**
 
+Overall health check, returns json such as:
+
+```json
+{
+  "healthy": true,
+  "message": "streams are ok"
+}
+```
+
+### **`GET {BASE_URL}:8085/health/streams`**
+
+Show the status of each topology with a link to details, example:
+
+```json
+{
+  "BsmDeduplicator": {
+    "state": "RUNNING",
+    "detailsUrl": "http://localhost:8085/health/streams/BsmDeduplicator"
+  },
+  "BsmWhitelist": {
+    "state": "RUNNING",
+    "detailsUrl": "http://localhost:8085/health/streams/BsmWhitelist"
+  },
+  "MapDeduplicator": {
+    "state": "RUNNING",
+    "detailsUrl": "http://localhost:8085/health/streams/MapDeduplicator"
+  },
+  "ProcessedBsmDeduplicator": {
+    "state": "RUNNING",
+    "detailsUrl": "http://localhost:8085/health/streams/ProcessedBsmDeduplicator"
+  },
+  "ProcessedMapDeduplicator": {
+    "state": "RUNNING",
+    "detailsUrl": "http://localhost:8085/health/streams/ProcessedMapDeduplicator"
+  },
+  "ProcessedMapWKTDeduplicator": {
+    "state": "RUNNING",
+    "detailsUrl": "http://localhost:8085/health/streams/ProcessedMapWKTDeduplicator"
+  },
+  "ProcessedSpatDeduplicator": {
+    "state": "RUNNING",
+    "detailsUrl": "http://localhost:8085/health/streams/ProcessedSpatDeduplicator"
+  },
+  "TimDeduplicator": {
+    "state": "RUNNING",
+    "detailsUrl": "http://localhost:8085/health/streams/TimDeduplicator"
+  }
+}
+```
+
+### **`GET {BASE_URL}:8085/health/streams/{TOPOLOGY_NAME}`**
+
+Shows detailed metrics on each topology.
+
+For example `/health/streams/BsmDeduplicator` returns (excerpts):
+
+```json
+{
+    "admin-client-metrics": {
+      "connection-close-rate": 0.019621308741293,
+      "connection-close-total": 2,
+      "connection-count": 1,
+      "connection-creation-rate": 0.0196606570591589,
+      "connection-creation-total": 3,
+...
+    "consumer-coordinator-metrics": {
+      "assigned-partitions": 15,
+      "commit-latency-avg": "NaN",
+      "commit-latency-max": "NaN",
+      "commit-rate": 0,
+      "commit-total": 292,
+...
+    "stream-metrics": {
+      "alive-stream-threads": 2,
+      "application-id": "BsmDeduplicator",
+      "commit-id": "8a516edc2755df89",
+      "failed-stream-threads": 0,
+      "state": "RUNNING",
+      "topology-description": 
+...
+    "stream-topic-metrics": {
+      "bytes-consumed-total": 95796,
+      "bytes-produced-total": 32907,
+      "records-consumed-total": 0,
+      "records-produced-total": 0
+      ...etc
+```
 
 ## Release Notes
 
@@ -189,6 +275,7 @@ filters:
     whitelist:
       enabled: ${ENABLE_BSM_WHITELIST:false}
       input-topic: topic.OdeBsmJson
+      output-dlq-topic: topic.BlacklistedOdeBsmJson
       output-topic: topic.WhitelistedOdeBsmJson
       groups:
         ioo-bus:
