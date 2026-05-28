@@ -139,6 +139,7 @@ To manually configure deduplication for a topic, the following environment varia
 | `ENABLE_ODE_MAP_DEDUPLICATION` | `true` / `false` - Enable ODE MAP message Deduplication |
 | `ENABLE_ODE_TIM_DEDUPLICATION` | `true` / `false` - Enable ODE TIM message Deduplication |
 | `ENABLE_PROCESSED_SPAT_DEDUPLICATION` | `true` / `false` - Enable ProcessedSpat Deduplication |
+| `ENABLE_ODE_SPAT_DEDUPLICATION` |  `true` / `false` - Enable ODE Spat message Deduplication |
 | `ENABLE_ODE_BSM_DEDUPLICATION` | `true` / `false` - Enable ODE BSM Deduplication |
 | `ENABLE_PROCESSED_BSM_DEDUPLICATION` | `true` / `false` - Enable Processed BSM Deduplication |
 

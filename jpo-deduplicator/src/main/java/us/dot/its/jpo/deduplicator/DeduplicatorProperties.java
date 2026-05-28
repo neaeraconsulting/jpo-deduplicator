@@ -87,6 +87,12 @@ public class DeduplicatorProperties implements EnvironmentAware {
    private String confluentKey = null;
    private String confluentSecret = null;
 
+   // Ode SPaT Json Configuration
+   private String kafkaTopicOdeSpatJson;
+   private String kafkaTopicDeduplicatedOdeSpatJson;
+   private boolean enableOdeSpatDeduplication;
+   private String kafkaStateStoreOdeSpatJsonName = "OdeSpatJson-store";
+
    // Processed SPaT Configuration
    private String kafkaTopicProcessedSpat;
    private String kafkaTopicDeduplicatedProcessedSpat;

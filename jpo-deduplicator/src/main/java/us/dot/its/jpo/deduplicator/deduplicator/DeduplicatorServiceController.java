@@ -20,6 +20,7 @@ import us.dot.its.jpo.deduplicator.deduplicator.topologies.ProcessedBsmDeduplica
 import us.dot.its.jpo.deduplicator.deduplicator.topologies.ProcessedMapDeduplicatorTopology;
 import us.dot.its.jpo.deduplicator.deduplicator.topologies.ProcessedMapWktDeduplicatorTopology;
 import us.dot.its.jpo.deduplicator.deduplicator.topologies.ProcessedSpatDeduplicatorTopology;
+import us.dot.its.jpo.deduplicator.deduplicator.topologies.SpatDeduplicatorTopology;
 
 @Controller
 @DependsOn("createKafkaTopics")
@@ -60,6 +61,12 @@ public class DeduplicatorServiceController {
                 logger.info("Starting TIM Deduplicator");
                 TimDeduplicatorTopology timDeduplicatorTopology = new TimDeduplicatorTopology(props);
                 timDeduplicatorTopology.start();
+            }
+
+            if (props.isEnableOdeSpatDeduplication()) {
+                logger.info("Starting SPaT Deduplicator");
+                SpatDeduplicatorTopology spatDeduplicatorTopology = new SpatDeduplicatorTopology(props);
+                spatDeduplicatorTopology.start();
             }
 
             if (props.isEnableProcessedSpatDeduplication()) {
