@@ -8,7 +8,6 @@ services:
       - deduplicator_full
       - geojsonconverter
     image: ${DOCKERHUB_HOST:-usdotjpoode}/geojsonconverter:${DOCKERHUB_RELEASE:-2025-q3}
-    platform: ${DOCKER_PLATFORM:-linux/amd64}
     restart: ${RESTART_POLICY}
     deploy:
       resources:
@@ -37,7 +36,6 @@ services:
       - deduplicator_full
       - ode
     image: ${DOCKERHUB_HOST:-usdotjpoode}/jpo-ode:${DOCKERHUB_RELEASE:-2025-q3}
-    platform: ${DOCKER_PLATFORM:-linux/amd64}
     restart: ${RESTART_POLICY}
     deploy:
       resources:
@@ -99,7 +97,6 @@ services:
       - deduplicator_full
       - adm
     image: ${DOCKERHUB_HOST:-usdotjpoode}/asn1_codec:${DOCKERHUB_RELEASE:-2025-q3}
-    platform: ${DOCKER_PLATFORM:-linux/amd64}
     restart: ${RESTART_POLICY}
     deploy:
       resources:
