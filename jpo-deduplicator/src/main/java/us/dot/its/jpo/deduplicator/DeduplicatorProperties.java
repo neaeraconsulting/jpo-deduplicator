@@ -175,13 +175,19 @@ public class DeduplicatorProperties implements EnvironmentAware {
       streamProps.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBrokers);
 
       streamProps.put(StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG,
-            LogAndContinueExceptionHandler.class.getName());
+            CustomDeserializationExceptionHandler.class.getName());
 
       streamProps.put(StreamsConfig.DEFAULT_TIMESTAMP_EXTRACTOR_CLASS_CONFIG,
             LogAndSkipOnInvalidTimestamp.class.getName());
 
       streamProps.put(StreamsConfig.DEFAULT_PRODUCTION_EXCEPTION_HANDLER_CLASS_CONFIG,
             AlwaysContinueProductionExceptionHandler.class.getName());
+
+      // Processing Exception handler
+      // New feature in Kafka 3.9
+      // KIP: https://cwiki.apache.org/confluence/display/KAFKA/KIP-1033%3A+Add+Kafka+Streams+exception+handler+for+exceptions+occurring+during+processing
+      streamProps.put(StreamsConfig.PROCESSING_EXCEPTION_HANDLER_CLASS_CONFIG,
+          LogAndContinueProcessingExceptionHandler.class.getName());
 
       streamProps.put(StreamsConfig.NUM_STREAM_THREADS_CONFIG, 2);
 
