@@ -1,6 +1,6 @@
 <configuration>
   <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+    <encoder>
       <pattern>%%date{"yyyy-MM-dd HH:mm:ss", UTC} [%thread] [%X{traceId:-},%X{spanId:-}] %-5level %logger{0} - %msg %n</pattern>
     </encoder>
   </appender>
