@@ -42,7 +42,7 @@ public class AlwaysContinueProductionExceptionHandler implements ProductionExcep
         ErrorHandlerContext context, ProducerRecord record, Exception exception,
         SerializationExceptionOrigin origin) {
         try {
-            log.error("Exception caught during Deserialization, " +
+            log.error("Exception caught during serialization, " +
                     "taskId: {}, topic: {}, timestamp: {}, offset: {}, partition: {}, key: {}, "
                     + "value: {}, origin is key or value: {}",
                 context.taskId(), record.topic(), context.timestamp(), context.offset(),
