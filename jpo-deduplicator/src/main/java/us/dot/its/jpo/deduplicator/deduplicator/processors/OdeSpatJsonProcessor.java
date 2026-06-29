@@ -1,0 +1,55 @@
+package us.dot.its.jpo.deduplicator.deduplicator.processors;
+
+import java.time.Duration;
+import java.time.Instant;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import us.dot.its.jpo.deduplicator.DeduplicatorProperties;
+import us.dot.its.jpo.deduplicator.utils.OdeJsonUtils;
+import us.dot.its.jpo.ode.model.OdeMessageFrameData;
+
+public class OdeSpatJsonProcessor extends DeduplicationProcessor<OdeMessageFrameData>{
+
+    DeduplicatorProperties props;
+
+    private static final Logger logger = LoggerFactory.getLogger(OdeSpatJsonProcessor.class);
+
+    public OdeSpatJsonProcessor(String storeName, DeduplicatorProperties props){
+        this.storeName = storeName;
+        this.props = props;
+    }
+
+    @Override
+    public Instant getMessageTime(OdeMessageFrameData message) {
+        return OdeJsonUtils.getOdeMessageFrameMessageTime(message);
+    }
+
+    @Override
+    public boolean isDuplicate(OdeMessageFrameData lastMessage, OdeMessageFrameData newMessage) {
+        try{
+            Instant newValueTime = getMessageTime(newMessage);
+            Instant oldValueTime = getMessageTime(lastMessage);
+            
+            // If the messages are more than 500 milliseconds apart, forward the new message on
+            if(newValueTime.minus(Duration.ofMillis(500)).isAfter(oldValueTime)) {
+                return false;
+            } 
+
+            // Check for null conditions - treat as non-duplicate if one is null and the other is not
+            boolean lastMessageIsNull = (lastMessage == null || lastMessage.getPayload() == null || lastMessage.getPayload().getData() == null);
+            boolean newMessageIsNull = (newMessage == null || newMessage.getPayload() == null || newMessage.getPayload().getData() == null);
+            if((lastMessageIsNull && !newMessageIsNull) || (!lastMessageIsNull && newMessageIsNull)) {
+                logger.warn("One SPaT message has a null payload or data, treating as non-duplicate");
+                return true;
+            }
+        } catch(Exception e){
+            logger.warn("Caught General Exception while checking Spat duplicates:" + e);
+        }
+
+        // Treat SPaTs as duplicates if they have the same intersection ID and
+        // are within the 500 millisecond time window
+        return true;   
+    }
+}
