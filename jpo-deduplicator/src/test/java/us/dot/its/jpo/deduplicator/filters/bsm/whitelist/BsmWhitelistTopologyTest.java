@@ -62,7 +62,7 @@ public class BsmWhitelistTopologyTest {
             // Result should include only ids in "include" list
             assertThat(dataList, hasSize(includeIds.size()));
             Set<String> resultIds = dataList.stream()
-                    .map(data -> getBsmTemporaryID(data).toString().toLowerCase())
+                    .map(data -> getBsmTemporaryID(data).toString())
                     .collect(Collectors.toSet());
             Set<String> diff = Sets.symmetricDifference(resultIds, includeIds);
             assertThat(

@@ -72,12 +72,11 @@ public class BsmWhitelistTestUtils {
     }
 
     public static final Set<String> includeIds = Set.of(
-            "11110100", "ffff0123", "00331234", "11110200", "11110234", "11112002", "FA820BEB",
+            "11110100", "FFFF0123", "00331234", "11110200", "11110234", "11112002", "FA820BEB",
         "97D40BEB");
 
     public static final Set<String> excludeIds = Set.of(
-            "11113003", "00002222", "00000000", "FA820CCC",
-        "97D40CCC");
+            "11113003", "00002222", "00000000", "FA820CCC", "97D40CCC");
 
 
 }
