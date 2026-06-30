@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.3</version>
+        <version>3.5.14</version>
         <relativePath />
     </parent>
     <groupId>usdot.jpo.ode</groupId>
@@ -34,6 +34,15 @@
         <sonar.language>java</sonar.language>
         <jpo.ode.version>5.1.0</jpo.ode.version>
         <jpo.geojsonconverter.version>3.3.0-alpha7</jpo.geojsonconverter.version>
+
+        <!-- Kafka Streams version -->
+        <!-- version 3.9+ needed for processing exception handling -->
+        <kafka.streams.version>3.9.1</kafka.streams.version>
+
+        <!-- Override default Kafka version for Spring Kafka and tests that use Spring EmbeddedKafka -->
+        <!-- Ref. https://docs.spring.io/spring-kafka/reference/appendix/override-boot-dependencies.html -->
+        <kafka.version>${kafka.streams.version}</kafka.version>
+        <spring-kafka.version>3.3.15</spring-kafka.version>
     </properties>
     <dependencies>
         <!-- Spring Boot Dependencies -->
@@ -119,8 +128,62 @@
                     <groupId>usdot.jpo.ode</groupId>
                     <artifactId>jpo-ode-plugins</artifactId>
                 </exclusion>
+
+                <!-- Exclude kafka dependencies to allow using newer streams version than geojsonconverter -->
+                <exclusion>
+                    <groupId>org.apache.kafka</groupId>
+                    <artifactId>kafka-streams</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.kafka</groupId>
+                    <artifactId>kafka-streams-test-utils</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.kafka</groupId>
+                    <artifactId>kafka-clients</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.kafka</groupId>
+                    <artifactId>kafka-server</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.kafka</groupId>
+                    <artifactId>kafka-server-common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.kafka</groupId>
+                    <artifactId>kafka_2.11</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.kafka</groupId>
+                    <artifactId>kafka_2.13</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework.kafka</groupId>
+                    <artifactId>spring-kafka</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-streams</artifactId>
+            <version>${kafka.streams.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>${kafka.streams.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -177,7 +240,7 @@
             </snapshots>
             <id>central</id>
             <name>Central Repository</name>
-            <url>https://repo.maven.apache.org/maven2</url>
+            <url>https://repo.maven.apache.org/maven2/</url>
         </repository>
         <!-- OSGEO repositories -->
         <repository>
