@@ -69,7 +69,14 @@ public class BsmWhitelistTopology {
               // If not whitelisted, emit the Temp ID value to a dlq topic
             .defaultBranch(Branched.withConsumer(blacklistedStream ->
                 blacklistedStream
-                    .mapValues(bsm -> getBsmTemporaryID(bsm).toString())
+                    .mapValues(bsm -> {
+                        try {
+                            return getBsmTemporaryID(bsm).toString();
+                        } catch (Exception e) {
+                            log.warn("Failed to extract TemporaryID from BSM: {}", e.getMessage());
+                            return "00000000";
+                        }
+                    })
                     .to(props.getOutputDlqTopic(),
                     Produced.with(Serdes.Void(),
                         Serdes.String()))));
