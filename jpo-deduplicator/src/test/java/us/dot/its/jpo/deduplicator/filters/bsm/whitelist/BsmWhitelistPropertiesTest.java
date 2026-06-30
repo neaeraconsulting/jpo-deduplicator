@@ -55,7 +55,7 @@ public class BsmWhitelistPropertiesTest {
     private static void addParams(ArrayList<Object[]> params, String hexId, boolean expectWhitelisted) {
         var tempId = new TemporaryID();
         tempId.setValue(hexId);
-        log.info("tempId: {}, value: {}, num: {}", tempId.toString(), tempId.getValue(), tempId.getOctets());
+        log.debug("tempId: {}, value: {}, num: {}", tempId, tempId.getValue(), tempId.getOctets());
         params.add(new Object[] { tempId, expectWhitelisted} );
     }
 }
