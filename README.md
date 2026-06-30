@@ -267,7 +267,7 @@ Example runtime directory structure:
 
 #### 2
 
-Within `application.yaml`, edit the `filters.bsm.whitetlist` section:
+Within `application.yaml`, edit the `filters.bsm.whitelist` section:
 
 ```yaml
 filters:
