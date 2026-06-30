@@ -119,7 +119,10 @@ public class HealthController {
     }
 
     @ExceptionHandler(Throwable.class)
-    public ResponseEntity<String> handleRuntime(Throwable ex) {
+    public ResponseEntity<String> handleError(Throwable ex) {
+        if (ex instanceof ResponseStatusException rse) {
+            return ResponseEntity.status(rse.getStatusCode()).body("error: " + rse.getReason());
+        }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("error: " + ex.getMessage());
     }
