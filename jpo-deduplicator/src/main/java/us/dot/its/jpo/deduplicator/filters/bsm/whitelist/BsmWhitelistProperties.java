@@ -26,6 +26,10 @@ public class BsmWhitelistProperties {
      * Test if the least significant bits of an id are whitelisted
      */
     public boolean whitelisted(TemporaryID id) {
+        if (id == null) {
+            log.warn("TemporaryID is null");
+            return false;
+        }
         byte[] idBytes = id.getOctets();
         if (idBytes.length != 4) {
             log.warn ("Malformed TemporaryID {} doesn't have 4 octets", id);
