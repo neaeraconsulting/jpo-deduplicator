@@ -53,6 +53,10 @@ public class OdeJsonUtils {
         if (bsmMf.getValue().getCoreData() == null) {
             throw new IllegalArgumentException("frameData.payload.value.coreData is null");
         }
-        return bsmMf.getValue().getCoreData().getId();
+        TemporaryID id = bsmMf.getValue().getCoreData().getId();
+        if (id == null) {
+            throw new IllegalArgumentException("frameData.payload.value.coreData.id is null");
+        }
+        return id;
     }
 }
