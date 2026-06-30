@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import us.dot.its.jpo.deduplicator.deduplicator.DeduplicatorServiceController;
 
@@ -90,11 +91,11 @@ public class HealthController {
     public MetricsGroupMap namedStreams(@PathVariable String name) {
 
         Map<String, KafkaStreams> streamsMap = getKafkaStreamsMap();
-        if (!streamsMap.containsKey(name))
-            throw new RuntimeException("The streams map doesn't contain an object named " + name);
         KafkaStreams streams = streamsMap.get(name);
-        if (streams == null)
-            throw new RuntimeException("The KafkaStreams object is null");
+        if (streams == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "Unknown streams topology: " + name);
+        }
 
 
         var metrics = streams.metrics();
