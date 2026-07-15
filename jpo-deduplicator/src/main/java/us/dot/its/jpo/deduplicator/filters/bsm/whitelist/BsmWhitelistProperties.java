@@ -15,10 +15,35 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "filters.bsm.whitelist")
 public class BsmWhitelistProperties {
 
+    /**
+     * Enable/disable the BSM whitelist filter.
+     */
     private boolean enabled;
+
+    /**
+     * Enable/disable sending the TempID of discarded/blacklisted messages to a Dead Letter Queue
+     * (DLQ) topic.
+     */
+    private boolean dlqEnabled;
+
+    /**
+     * Input topic with unfiltered BSMs.
+     */
     private String inputTopic;
+
+    /**
+     * Output topic for whitelisted BSMs.
+     */
     private String outputTopic;
+
+    /**
+     * Dead Letter Queue topic with the TemID of discarded/blacklisted messages.
+     */
     private String outputDlqTopic;
+
+    /**
+     * Map of BSM whitelist groups.
+     */
     private Map<String, BsmWhitelistGroup> groups;
 
 

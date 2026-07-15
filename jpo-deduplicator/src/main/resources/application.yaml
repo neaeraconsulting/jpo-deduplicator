@@ -111,6 +111,7 @@ filters:
   bsm:
     whitelist:
       enabled: ${ENABLE_BSM_WHITELIST:false}
+      dlq-enabled: ${ENABLE_BSM_WHITELIST_DLQ:false}
       input-topic: topic.OdeBsmJson
       output-topic: topic.WhitelistedOdeBsmJson
       output-dlq-topic: topic.BlacklistedOdeBsmJson
