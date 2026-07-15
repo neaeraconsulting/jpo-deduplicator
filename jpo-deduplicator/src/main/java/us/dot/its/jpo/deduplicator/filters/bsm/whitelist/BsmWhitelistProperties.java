@@ -27,12 +27,12 @@ public class BsmWhitelistProperties {
      */
     public boolean whitelisted(TemporaryID id) {
         if (id == null) {
-            log.warn("TemporaryID is null");
+            log.debug("TemporaryID is null");
             return false;
         }
         byte[] idBytes = id.getOctets();
         if (idBytes.length != 4) {
-            log.warn ("Malformed TemporaryID {} doesn't have 4 octets", id);
+            log.debug ("Malformed TemporaryID {} doesn't have 4 octets", id);
             return false;
         }
         int lsb = (Byte.toUnsignedInt(idBytes[2]) << 8) | Byte.toUnsignedInt(idBytes[3]);
