@@ -30,7 +30,7 @@ public class BsmWhitelistPropertiesTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        properties = getBsmWhitelistProperties();
+        properties = getBsmWhitelistProperties(true);
     }
 
     @Test

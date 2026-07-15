@@ -30,7 +30,7 @@ public class BsmWhitelistTopologyTest {
     @Test
     public void testTopology() throws JsonProcessingException {
         DeduplicatorProperties dedupProps = new DeduplicatorProperties();
-        BsmWhitelistProperties props = getBsmWhitelistProperties();
+        BsmWhitelistProperties props = getBsmWhitelistProperties(true);
         var whitelistTopology = new BsmWhitelistTopology(dedupProps, props);
         Topology topology = whitelistTopology.buildTopology();
         try (TopologyTestDriver driver = new TopologyTestDriver(topology)) {
@@ -78,6 +78,54 @@ public class BsmWhitelistTopologyTest {
                 String.format("excludeIds: %s, dlqIds: %s, diff: %s", excludeIds, dlqIds, dlqDiff),
                 dlqDiff, hasSize(0));
 
+        }
+    }
+
+    @Test
+    public void testTopology_DlqDisabled() throws JsonProcessingException {
+        DeduplicatorProperties dedupProps = new DeduplicatorProperties();
+        BsmWhitelistProperties props = getBsmWhitelistProperties(false);
+        var whitelistTopology = new BsmWhitelistTopology(dedupProps, props);
+        Topology topology = whitelistTopology.buildTopology();
+        try (TopologyTestDriver driver = new TopologyTestDriver(topology)) {
+
+            final TestInputTopic<Void, OdeMessageFrameData> inputTopic =
+                driver.createInputTopic(props.getInputTopic(),
+                    new VoidSerializer(),
+                    new JsonSerializer<OdeMessageFrameData>());
+
+            final TestOutputTopic<Void, OdeMessageFrameData> outputTopic =
+                driver.createOutputTopic(props.getOutputTopic(),
+                    new VoidDeserializer(),
+                    new JsonDeserializer<>(OdeMessageFrameData.class));
+
+            final TestOutputTopic<Void, String> dlqTopic =
+                driver.createOutputTopic(props.getOutputDlqTopic(),
+                    new VoidDeserializer(),
+                    new StringDeserializer());
+
+            for (String id : includeIds) {
+                inputTopic.pipeInput(getBsmMessageFrameData(id));
+            }
+            for (String id : excludeIds) {
+                inputTopic.pipeInput(getBsmMessageFrameData(id));
+            }
+
+            List<OdeMessageFrameData> dataList = outputTopic.readValuesToList();
+
+            // Result should include only ids in "include" list
+            assertThat(dataList, hasSize(includeIds.size()));
+            Set<String> resultIds = dataList.stream()
+                .map(data -> getBsmTemporaryID(data).toString())
+                .collect(Collectors.toSet());
+            Set<String> diff = Sets.symmetricDifference(resultIds, includeIds);
+            assertThat(
+                String.format("includeIds: %s, resultIds: %s, diff: %s", includeIds, resultIds, diff),
+                diff, hasSize(0));
+
+            // DLQ topic should be empty
+            List<String> dlqList = dlqTopic.readValuesToList();
+            assertThat(dlqList, hasSize(0));
         }
     }
 

@@ -85,6 +85,9 @@ public class BsmWhitelistTopology {
                         .to(props.getOutputDlqTopic(),
                             Produced.with(Serdes.Void(),
                                 Serdes.String()))));
+            } else {
+                // DLD disabled, no-op default branch
+                branchedStream.noDefaultBranch();
             }
         return builder.build();
 

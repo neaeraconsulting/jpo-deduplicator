@@ -20,9 +20,10 @@ import java.util.Set;
 @Slf4j
 public class BsmWhitelistTestUtils {
 
-    public static BsmWhitelistProperties getBsmWhitelistProperties() {
+    public static BsmWhitelistProperties getBsmWhitelistProperties(boolean dlqEnabled) {
         var props = new BsmWhitelistProperties();
         props.setEnabled(true);
+        props.setDlqEnabled(dlqEnabled);
         props.setInputTopic("topic.OdeBsmJson");
         props.setOutputDlqTopic("topic.BlacklistedOdeBsmJson");
         props.setOutputTopic("topic.WhitelistedOdeBsmJson");
