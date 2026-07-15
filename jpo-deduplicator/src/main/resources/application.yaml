@@ -112,19 +112,36 @@ filters:
     whitelist:
       enabled: ${ENABLE_BSM_WHITELIST:false}
       dlq-enabled: ${ENABLE_BSM_WHITELIST_DLQ:false}
-      input-topic: topic.OdeBsmJson
-      output-topic: topic.WhitelistedOdeBsmJson
-      output-dlq-topic: topic.BlacklistedOdeBsmJson
-      groups:
-        ioo-bus:
-          description: IOO buses
-          id-lsb:
-            - 2001
-            - 2002
-        probe:
-          description: IOO probe vehicles
-          id-lsb:
-            - 4001
-            - 4002
-
-
+      input-topic: ${BSM_WHITELIST_INPUT_TOPIC:topic.OdeBsmJson}
+      output-topic: ${BSM_WHITELIST_OUTPUT_TOPIC:topic.WhitelistedOdeBsmJson}
+      output-dlq-topic: ${BSM_WHITELIST_OUTPUT_DLQ_TOPIC:topic.BlacklistedOdeBsmJson}
+#
+# Example group configuration for filters.bsm.whitelist.
+# If the bsm whitelist feature is enabled, either provide an application.yaml file alongside the
+# deployment jar to override the configuration and include the group configuration, such as the
+# following. The group names and id-lsb values may be customized as needed:
+#
+# filters:
+#   bsm:
+#     whitelist:
+#       ...
+#       groups:
+#         ioo-bus:
+#           description: IOO buses
+#           id-lsb:
+#             - 2001
+#             - 2002
+#         probe:
+#           description: IOO probe vehicles
+#           id-lsb:
+#            - 4001
+#            - 4002
+#
+# Or, if it is desired to define the configuration only with environment variables, refer to the
+# Spring Boot documentation on conventions for binding from environment variables at
+# https://docs.spring.io/spring-boot/reference/features/external-config.html#features.external-config.typesafe-configuration-properties.relaxed-binding.environment-variables
+# and provide the group configuration as environment variables in .env and a customized
+# docker-compose.yml file where, again, the group names and id-lsb values may be customized as
+# needed, except that dashes can't be included in the group names. See sample.env for an example
+# of how to configure the groups with environment variables.
+#
