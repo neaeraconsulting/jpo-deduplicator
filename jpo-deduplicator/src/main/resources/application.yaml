@@ -106,6 +106,15 @@ kafka.topics:
     - name: ${kafkaTopicDeduplicatedProcessedBsm}
       cleanupPolicy: delete
       retentionMs: 300000
+    - name: ${filters.bsm.whitelist.input-topic}
+      cleanupPolicy: delete
+      retentionMs: 300000
+    - name: ${filters.bsm.whitelist.output-topic}
+      cleanupPolicy: delete
+      retentionMs: 300000
+    - name: ${filters.bsm.whitelist.output-dlq-topic}
+      cleanupPolicy: delete
+      retentionMs: 300000
 
 filters:
   bsm:
